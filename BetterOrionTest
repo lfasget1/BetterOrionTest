@@ -1662,10 +1662,10 @@ function OrionLib:MakeWindow(WindowConfig)
 			ContainerRight:SetAttribute("tab", Val.Tab)
 
 			AddConnection(ContainerLeft.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
-				ContainerLeft.CanvasSize = UDim2.new(0, 0, 0, ContainerLeft.UIListLayout.AbsoluteContentSize.Y - 5)
+				ContainerLeft.CanvasSize = UDim2.new(0, 0, 0, ContainerLeft.UIListLayout.AbsoluteContentSize.Y - 20)
 			end)
 			AddConnection(ContainerRight.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
-				ContainerRight.CanvasSize = UDim2.new(0, 0, 0, ContainerRight.UIListLayout.AbsoluteContentSize.Y - 5)
+				ContainerRight.CanvasSize = UDim2.new(0, 0, 0, ContainerRight.UIListLayout.AbsoluteContentSize.Y - 20)
 			end)
 
 			if GetOrionIcon(TabConfig.Icon) ~= nil then TabFrame.Ico.Image = GetOrionIcon(TabConfig.Icon) end	
@@ -2856,10 +2856,24 @@ function OrionLib:MakeWindow(WindowConfig)
 								Rotation = Dropdown.Toggled and 180 or 0
 							}):Play()
 							local NextSize = #Dropdown.Options > MaxElements and (Dropdown.Toggled and UDim2.new(1, 0, 0, 38 + (MaxElements * 28)) or UDim2.new(1, 0, 0, 38)) or (Dropdown.Toggled and UDim2.new(1, 0, 0, DropdownList.AbsoluteContentSize.Y + 38) or UDim2.new(1, 0, 0, 38))
+							
 							TweenService:Create(DropdownFrame,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{Size = NextSize}):Play()
-							if Dropdown.Toggled then
-								OldSize = DropdownFrame.Parent.Parent.Parent.Size.Y.Offset
-							end
+
+							-- НОВЫЙ КОД ДЛЯ ОБНОВЛЕНИЯ СКРОЛЛА ПРИ ОТКРЫТИИ
+							task.spawn(function()
+								task.wait(0.15) -- Ждем, пока закончится анимация изменения размера
+								local Parent = DropdownFrame.Parent
+								while Parent and Parent ~= MainWindow do
+									if Parent.Name == "ItemContainerLeft" or Parent.Name == "ItemContainerRight" then
+										-- Обновляем размер скролла, чтобы дропдаун не обрезался
+										Parent.CanvasSize = UDim2.new(0, 0, 0, Parent.UIListLayout.AbsoluteContentSize.Y + 20)
+										break
+									end
+									Parent = Parent.Parent
+								end
+							end)
+
+							-- Оригинальный код для настроек (оставляем)
 							if DropdownFrame.Parent.Name == "SettingsScroll" then
 								TweenService:Create(DropdownFrame.Parent.Parent.Parent, TweenInfo.new(.15), {
 									Size = UDim2.new(
@@ -2869,7 +2883,6 @@ function OrionLib:MakeWindow(WindowConfig)
 								}):Play()
 							end
 						end)
-
 						Dropdown:Refresh(Dropdown.Options, false)
 						
 						-- Устанавливаем дефолтное значение
