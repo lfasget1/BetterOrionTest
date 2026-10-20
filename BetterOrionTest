@@ -1803,14 +1803,22 @@ function OrionLib:MakeWindow(WindowConfig)
 			SectionConfig.Side = SectionConfig.Side or "Left"  
 
 			local ContainerSection = (SectionConfig.Side == "Left") and ContainerLeft or ContainerRight
-			local SectionLabel = SetProps(MakeElement("Label", SectionConfig.Name, 14), {Size = UDim2.new(1, -12, 0, 20), Position = UDim2.new(0, 0, 0, -20), Font = Enum.Font.GothamSemibold})
+
+			local SectionLabel = SetProps(MakeElement("Label", SectionConfig.Name, 14), {
+				Size = UDim2.new(1, -12, 0, 20), Position = UDim2.new(0, 0, 0, -20), Font = Enum.Font.GothamSemibold
+			})
 			table.insert(OrionLib.SectionLabels, SectionLabel)
+			
 			SectionLabel.TextColor3 = OrionLib.Themes[OrionLib.SelectedTheme]["Text"]["Color"]
 			SectionLabel.TextTransparency = OrionLib.Themes[OrionLib.SelectedTheme]["Text"]["Transparency"]
 
-			local SectionFrame = SetChildren(SetProps(MakeElement("TFrame"), {Size = UDim2.new(1, 0, 0, 10), Parent = ContainerSection}), {
+			local SectionFrame = SetChildren(SetProps(MakeElement("TFrame"), {
+				Size = UDim2.new(1, 0, 0, 10), Parent = ContainerSection
+			}), {
 				SectionLabel,
-				SetChildren(SetProps(MakeElement("TFrame"), {AnchorPoint = Vector2.new(0, 0), Size = UDim2.new(0.5, 0, 1, 0), Position = UDim2.new(0, 0, 0, 5), Name = "Holder"}), {MakeElement("List", 0, 6)}),
+				SetChildren(SetProps(MakeElement("TFrame"), {
+					AnchorPoint = Vector2.new(0, 0), Size = UDim2.new(0.5, 0, 1, 0), Position = UDim2.new(0, 0, 0, 5), Name = "Holder"
+				}), { MakeElement("List", 0, 6) }),
 			})
 
 			AddConnection(SectionFrame.Holder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
@@ -1819,10 +1827,13 @@ function OrionLib:MakeWindow(WindowConfig)
 			end)
 
 			local SectionFunction = {}
-			local SecElements = GetElements(SectionFrame.Holder)
-			for i, v in next, SecElements do 
-				SectionFunction[i] = v 
+			-- БЕРЕМ ЭЛЕМЕНТЫ ИЗ ХАКА И ПЕРЕДАЕМ ИХ СЕКЦИИ
+			for i, v in next, ElementFunction do 
+				if typeof(v) == "function" then
+					SectionFunction[i] = v 
+				end
 			end
+			
 			return SectionFunction
 		end
 
