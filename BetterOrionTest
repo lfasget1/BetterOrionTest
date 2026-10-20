@@ -1819,7 +1819,10 @@ function OrionLib:MakeWindow(WindowConfig)
 			end)
 
 			local SectionFunction = {}
-			for i, v in next, GetElements(SectionFrame.Holder) do SectionFunction[i] = v end
+			local SecElements = GetElements(SectionFrame.Holder)
+			for i, v in next, SecElements do 
+				SectionFunction[i] = v 
+			end
 			return SectionFunction
 		end
 
