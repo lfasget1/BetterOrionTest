@@ -1,4 +1,4 @@
---68
+--69
 while not game:IsLoaded() do task.wait() end
 for _, UI in ipairs(game.CoreGui:GetChildren()) do
 	if UI.Name == "BetterOrion" then 
@@ -1820,7 +1820,13 @@ function OrionLib:SetConfigTab(TabName)
 		function JSONEncode(Data) return HttpService:JSONEncode(Data) end
 
 		local function LoadPhotoFromUrl(Url) if Url == "" or Url == nil then return nil end; local FileName = string.format("customasset_%s", tostring(math.random(1, 99999))); writefile(FileName, game:HttpGet(Url)); task.delay(10, delfile, FileName); return getcustomasset(FileName) end
-		local function CheckSymbol(Text) for i = 1, #Text do if not AlphabetCheck:find(Text:sub(i, i)) then return false end end; return true end
+            for i = 1, #Text do 
+                if not AlphabetCheck:find(Text:sub(i, i)) then 
+                    return false 
+                end 
+            end; 
+            return true 
+        end
 
 		function GetConfigs(Type)
 -- local Folder = isfolder(FolderName)
