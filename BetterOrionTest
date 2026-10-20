@@ -1,3 +1,4 @@
+--67
 while not game:IsLoaded() do task.wait() end
 for _, UI in ipairs(game.CoreGui:GetChildren()) do
 	if UI.Name == "BetterOrion" then 
