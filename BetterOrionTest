@@ -1826,17 +1826,14 @@ function OrionLib:MakeWindow(WindowConfig)
 				SectionFrame.Holder.Size = UDim2.new(1, 0, 0, SectionFrame.Holder.UIListLayout.AbsoluteContentSize.Y)
 			end)
 
+			-- ПРОСТО КОПИРУЕМ ВСЕ ФУНКЦИИ ИЗ ТАБА В СЕКЦИЮ
 			local SectionFunction = {}
-			-- БЕРЕМ ЭЛЕМЕНТЫ ИЗ ХАКА И ПЕРЕДАЕМ ИХ СЕКЦИИ
-			for i, v in next, ElementFunction do 
-				if typeof(v) == "function" then
-					SectionFunction[i] = v 
-				end
+			for i, v in pairs(ElementFunction) do 
+				SectionFunction[i] = v 
 			end
 			
 			return SectionFunction
 		end
-
 		OrionLib.Tabs[TabConfig.Name] = ElementFunction
 		return ElementFunction   
 	end  
