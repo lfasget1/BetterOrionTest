@@ -783,7 +783,6 @@ function OrionLib:MakeWindow(WindowConfig)
 
 		ContainerRight:SetAttribute("tab", Val.Tab)
 
-		-- ИСПРАВЛЕНИЕ 1: Изменено с -20 на +20, чтобы нижний элемент не обрезался
 		AddConnection(ContainerLeft.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
 			ContainerLeft.CanvasSize = UDim2.new(0, 0, 0, ContainerLeft.UIListLayout.AbsoluteContentSize.Y + 20)
 		end)
@@ -1007,7 +1006,6 @@ function OrionLib:MakeWindow(WindowConfig)
 						Toggle:SetBind("")
 					end
 
-					-- ИСПРАВЛЕНИЕ 2: Заменил фиксированную высоту 38 на AutomaticSize = Enum.AutomaticSize.Y. Теперь текст не будет налезать на соседний тоггл.
 					local ToggleFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, WindowConfig.NewUI and 10 or 5), {
 						Size = UDim2.new(1, 0, 0, 38), 
 						AutomaticSize = Enum.AutomaticSize.Y,
@@ -1302,7 +1300,6 @@ function OrionLib:MakeWindow(WindowConfig)
 						
 						if Dropdown.Toggled then OldSize = DropdownFrame.Parent.Parent.Parent.Size.Y.Offset end
 						
-						-- ИСПРАВЛЕНИЕ 3: Улучшенное обновление скролла при открытии, чтобы дропдаун не обрезался
 						task.spawn(function()
 							task.wait(0.15) 
 							local Parent = DropdownFrame.Parent
@@ -1796,44 +1793,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		for i, v in next, GetElements(ContainerLeft) do 
 			ElementFunction[i] = v 
 		end 
-		
-		function ElementFunction:AddSection(SectionConfig)
-			SectionConfig = SectionConfig or {}
-			SectionConfig.Name = SectionConfig.Name or "Section"
-			SectionConfig.Side = SectionConfig.Side or "Left"  
 
-			local ContainerSection = (SectionConfig.Side == "Left") and ContainerLeft or ContainerRight
-
-			local SectionLabel = SetProps(MakeElement("Label", SectionConfig.Name, 14), {
-				Size = UDim2.new(1, -12, 0, 20), Position = UDim2.new(0, 0, 0, -20), Font = Enum.Font.GothamSemibold
-			})
-			table.insert(OrionLib.SectionLabels, SectionLabel)
-			
-			SectionLabel.TextColor3 = OrionLib.Themes[OrionLib.SelectedTheme]["Text"]["Color"]
-			SectionLabel.TextTransparency = OrionLib.Themes[OrionLib.SelectedTheme]["Text"]["Transparency"]
-
-			local SectionFrame = SetChildren(SetProps(MakeElement("TFrame"), {
-				Size = UDim2.new(1, 0, 0, 10), Parent = ContainerSection
-			}), {
-				SectionLabel,
-				SetChildren(SetProps(MakeElement("TFrame"), {
-					AnchorPoint = Vector2.new(0, 0), Size = UDim2.new(0.5, 0, 1, 0), Position = UDim2.new(0, 0, 0, 5), Name = "Holder"
-				}), { MakeElement("List", 0, 6) }),
-			})
-
-			AddConnection(SectionFrame.Holder.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
-				SectionFrame.Size = UDim2.new(1, 0, 0, SectionFrame.Holder.UIListLayout.AbsoluteContentSize.Y + 31)
-				SectionFrame.Holder.Size = UDim2.new(1, 0, 0, SectionFrame.Holder.UIListLayout.AbsoluteContentSize.Y)
-			end)
-
-			-- ПРОСТО КОПИРУЕМ ВСЕ ФУНКЦИИ ИЗ ТАБА В СЕКЦИЮ
-			local SectionFunction = {}
-			for i, v in pairs(ElementFunction) do 
-				SectionFunction[i] = v 
-			end
-			
-			return SectionFunction
-		end
 		OrionLib.Tabs[TabConfig.Name] = ElementFunction
 		return ElementFunction   
 	end  
