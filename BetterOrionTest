@@ -538,7 +538,7 @@ function OrionLib:MakeWindow(WindowConfig)
 						task.wait()
 					end
 
-					UserInputService.MouseIconEnabled = false
+					UserInputService.MouseIconEnabled = true
 					freeMouse.Visible = false
 				end)
 			else
@@ -4149,10 +4149,7 @@ function OrionLib:MakeWindow(WindowConfig)
 				return ElementFunction   
 			end	
 
-local ElementFunction = {Type = "ElementFunction", Name = TabConfig.Name}
-                        for i, v in next, GetElements(ContainerLeft) do 
-                        ElementFunction[i] = v 
-                        end 
+			local ElementFunction = {Type = "ElementFunction", Name = TabConfig.Name}
 			function ElementFunction:AddSection(SectionConfig)
 				SectionConfig = SectionConfig or {}
 				SectionConfig.Name = SectionConfig.Name or "Section"
